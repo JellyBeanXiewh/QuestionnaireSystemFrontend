@@ -19,12 +19,14 @@
         </el-form-item>
 
         <el-form-item label="验证码" prop="check_code">
-          <el-col :span="14">
-            <el-input v-model="form.check_code"></el-input>
-          </el-col>
-          <el-col :span="10">
-            <el-image :src="check_code_url" fit="fill" alt="验证码" @click="get_check_code"></el-image>
-          </el-col>
+          <el-row gutter="10">
+            <el-col :span="14">
+              <el-input v-model="form.check_code"></el-input>
+            </el-col>
+            <el-col :span="10">
+              <el-image :src="check_code_url" fit="fill" alt="验证码" @click="get_check_code"></el-image>
+            </el-col>
+          </el-row>
         </el-form-item>
         <el-form-item>
           <el-button
@@ -33,9 +35,12 @@
               native-type="submit"
               @click="handleSubmit('form')"
           >
-            立即登录
+            登录
           </el-button>
         </el-form-item>
+        <el-row type="flex" justify="center">
+          <el-link type="primary" href="/register">没有账号？去注册</el-link>
+        </el-row>
       </el-form>
     </div>
     <div class="login-logo"/>
@@ -110,10 +115,13 @@
               .catch((err) => {
                 // console.log(err)
                 console.error(err)
+                console.error(err.response)
                 // this.$message.error('网络请求错误，请稍后重试!')
+                this.get_check_code()
               })
           } else {
             this.$message.error('表单填写有误!')
+            this.get_check_code()
           }
         })
       }
