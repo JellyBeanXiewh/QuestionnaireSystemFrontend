@@ -11,7 +11,7 @@
           @submit.native.prevent
           @keyup.enter="handleSubmit('form')"
       >
-        <el-form-item label="用户名" prop="email">
+        <el-form-item label="邮箱" prop="email">
           <el-input v-model="form.email" autocomplete="on"></el-input>
         </el-form-item>
         <el-form-item label="密码" prop="pwd">
@@ -89,7 +89,7 @@
         this.$refs[name].validate((valid) => {
           if (valid) {
             const payload = this.form;
-            axios.post('/login', payload)
+            axios.post('/login/', payload)
               .then((res) => {
                 console.log(res);
                 // TODO: 登录成功后的逻辑
@@ -107,8 +107,10 @@
 //                   this.$Message.error('帐号或密码有误!')
 //                 }
               })
-              .catch(() => {
-                this.$message.error('网络请求错误，请稍后重试!')
+              .catch((err) => {
+                // console.log(err)
+                console.error(err)
+                // this.$message.error('网络请求错误，请稍后重试!')
               })
           } else {
             this.$message.error('表单填写有误!')
