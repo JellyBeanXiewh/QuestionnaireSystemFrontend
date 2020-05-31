@@ -153,6 +153,8 @@
           axios.post('/emailCode/', payload)
             .then(() => {
               this.btn.cd = 60;
+              this.btn.disabled = true;
+              this.btn.text = this.btn.cd + 's 后可重发';
               let cool_down = setInterval(() => {
                 if(this.btn.cd < 1){
                   this.btn.disabled = false;
@@ -160,8 +162,7 @@
                   this.btn.cd = 60;
                   clearInterval(cool_down);
                 } else {
-                  this.btn.disabled = true;
-                  this.btn.text = this.btn.cd-- + 's 后可重发';
+                  this.btn.text = --this.btn.cd + 's 后可重发';
                 }
               },1000);
               this.$message.success('验证码发送成功，请注意查收');
