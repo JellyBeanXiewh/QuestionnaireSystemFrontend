@@ -98,6 +98,7 @@
               .then((res) => {
                 console.log(res);
                 // TODO: 登录成功后的逻辑
+                this.$message.success('登录成功！但我还没写该跳转的页面');
 //                 if (response.data.err === OK) {
 //                   this.$Message.success('登录成功!')
 //                   const data = {
@@ -112,15 +113,30 @@
 //                   this.$Message.error('帐号或密码有误!')
 //                 }
               })
-              .catch((err) => {
-                // console.log(err)
-                console.error(err)
-                console.error(err.response)
-                // this.$message.error('网络请求错误，请稍后重试!')
+              .catch((error) => {
+                switch (error.status) {
+                  case 403:
+                    switch (error.msg) {
+                      case 1:
+                        this.$message.error('用户名或密码错误');
+                        break;
+                      case 2:
+                        this.$message.error('验证码错误');
+                        break;
+                      case 100:
+                        this.$message.error('请将信息填写完整');
+                        break;
+                      default:
+                        this.$message.error('其他错误');
+                    }
+                    break;
+                  default:
+                    this.$message.error('网络连接超时，请检查网络或稍后再试');
+                }
                 this.get_check_code()
               })
           } else {
-            this.$message.error('表单填写有误!')
+            this.$message.error('信息填写有误')
             this.get_check_code()
           }
         })
