@@ -258,14 +258,8 @@
     width: 100%;
   }
 
-  .login-wrapper .form-area {
-    width: 300px;
-  }
-
-  .login-wrapper .form-area .form-date{
-    width: 300px;
-  }
-
+  .login-wrapper .form-area,
+  .login-wrapper .form-area .form-date,
   .login-wrapper .form-area .form-select{
     width: 300px;
   }

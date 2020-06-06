@@ -98,7 +98,8 @@
               .then((res) => {
                 console.log(res);
                 // TODO: 登录成功后的逻辑
-                this.$message.success('登录成功！但我还没写该跳转的页面');
+                // this.$message.success('登录成功！但我还没写该跳转的页面');
+                this.$router.push({ name: 'Manage' });
 //                 if (response.data.err === OK) {
 //                   this.$Message.success('登录成功!')
 //                   const data = {

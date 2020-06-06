@@ -3,6 +3,7 @@ import Router from 'vue-router';
 // import HelloWorld from "./components/HelloWorld";
 import Login from "./components/Login";
 import Register from "./components/Register";
+import Layout from "./components/Layout";
 
 Vue.use(Router);
 
@@ -29,7 +30,18 @@ const router = new Router({
     {
       path: '/manage',
       name: 'Manage',
-      meta: { require_auth: true },
+      component: Layout,
+      // meta: { require_auth: true },
+      children: [
+        {
+          path: 'list',
+          name: 'List',
+          meta: {
+            navIndex: '/list',
+            title: '我的问卷',
+          }
+        }
+      ]
     },
     {
       path: '/admin',
