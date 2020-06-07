@@ -4,6 +4,8 @@ import Router from 'vue-router';
 import Login from "./components/Login";
 import Register from "./components/Register";
 import Layout from "./components/Layout";
+import List from "./components/List";
+import Create from "./components/Create";
 
 Vue.use(Router);
 
@@ -34,11 +36,21 @@ const router = new Router({
       // meta: { require_auth: true },
       children: [
         {
-          path: 'list',
+          path: '',
           name: 'List',
+          component: List,
           meta: {
-            navIndex: '/list',
+            navIndex: '/manage',
             title: '我的问卷',
+          }
+        },
+        {
+          path: 'create',
+          name: 'Create',
+          component: Create,
+          meta: {
+            navIndex: '/manage/create',
+            title: '创建问卷',
           }
         }
       ]

@@ -1,11 +1,12 @@
+const base = '/manage';
 const NavConfigs = [
   {
-    index: '/list',
+    index: `${base}`,
     icon: 'el-icon-document',
     title: '我的问卷'
   },
   {
-    index: '/create',
+    index: `${base}/create`,
     icon: 'el-icon-s-promotion',
     title: '创建问卷'
   }

@@ -1,7 +1,7 @@
 <template>
   <el-menu
       :router="true"
-      :default-active="defaultActive"
+      :default-active="defaultActive()"
       :unique-opened="true"
       class="nav-bar"
       text-color="#fff"
@@ -29,7 +29,7 @@
       }
     },
     methods: {
-      defaultActive () {
+      defaultActive() {
         return this.$route.meta ? this.$route.meta.navIndex || '' : ''
       }
     }
