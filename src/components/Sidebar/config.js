@@ -8,7 +8,7 @@ const NavConfigs = [
   {
     index: `${base}/create`,
     icon: 'el-icon-s-promotion',
-    title: '创建问卷'
+    title: '设计问卷'
   }
 ]
 export default NavConfigs;

@@ -2,33 +2,28 @@
   <div class="naire-list">
     <div class="naire-btn">
       <el-button type="primary" @click="create">创建问卷</el-button>
-      <el-button type="danger" @click="batchDelete">批量删除</el-button>
     </div>
-    <el-table v-loading.fullscreen.lock="false" :data="list" @selection-change="onSelectionChange">
-      <el-table-column
-          type="selection"
-          width="55"
-      />
-      <el-table-column prop="n_title" label="问卷名称" align="left">
-<!--        <template slot-scope="{ row }">-->
-<!--          <router-link tag="a" :to="`./view/${row.n_id}`">-->
-<!--            {{ row.n_title }}-->
+    <el-table v-loading.fullscreen.lock="false" :data="NaireList" @selection-change="onSelectionChange">
+      <el-table-column prop="Q_name" label="问卷名称" align="left">
+        <template slot-scope="{ row }">
+          <router-link tag="a" :to="{ name: 'Edit', params: { id: row.Q_ID } }">
+            {{ row.Q_name }}
 <!--            <el-tag v-if="isExpired(row.n_deadline)" class="ml-10" size="mini" type="danger">已截止</el-tag>-->
-<!--          </router-link>-->
-<!--        </template>-->
+          </router-link>
+        </template>
       </el-table-column>
-      <el-table-column prop="n_creattime" label="创建时间" align="center">
-<!--        <template slot-scope="{ row }">-->
-<!--          {{ row.n_creattime | formatTime }}-->
-<!--        </template>-->
+      <el-table-column prop="Q_creat_date" label="创建时间" align="center">
+        <template slot-scope="{ row }">
+          {{ row.Q_creat_date | formatDate }}
+        </template>
       </el-table-column>
-      <el-table-column prop="n_deadline" label="截止时间" align="center">
-<!--        <template slot-scope="{ row }">-->
-<!--          &lt;!&ndash; 问卷超过截止日期 &ndash;&gt;-->
-<!--          {{ row.n_deadline | formatTime }}-->
-<!--        </template>-->
+      <el-table-column prop="Q_deadline_date" label="结束时间" align="center">
+        <template slot-scope="{ row }">
+          <!-- 问卷超过截止日期 -->
+          {{ row.Q_deadline_date | formatDate }}
+        </template>
       </el-table-column>
-      <el-table-column prop="n_status" label="发布状态" align="center">
+      <el-table-column prop="state" label="状态" align="center">
 <!--        <template slot-scope="{ row }">-->
 <!--          <el-tag :type="row.n_status | statusColorFilter">-->
 <!--            {{ row.n_status | statusFilter }}-->
@@ -56,23 +51,59 @@
       </el-table-column>
     </el-table>
 
-    <change-time :visible.sync="changeTimeVisible" :model="editModel" />
-    <copy-url :visible.sync="copyUrlVisible" :model="editModel" />
+<!--    <change-time :visible.sync="changeTimeVisible" :model="editModel" />-->
+<!--    <copy-url :visible.sync="copyUrlVisible" :model="editModel" />-->
   </div>
 </template>
 
 <script>
+  import axios from 'axios'
+
   export default {
     name: "List",
     data() {
       return {
-
+        NaireList: [],
+        // NaireStatus = NaireStatus,
+        loading: false,
+        changeTimeVisible: false,
+        copyUrlVisible: false,
+        editModel: {},
+        selectContent: [],
       }
     },
     methods: {
+      getList() {
+        const path = '/userQuestionnaireList/';
+        axios.get(path)
+          .then((res) => {
+            this.NaireList = res.data;
+          })
+          .catch(() => {
+            this.$message.error('网络连接超时，请检查网络或稍后再试');
+          })
+      },
       create() {
         this.$router.push({ name: 'Create' })
+      },
+      onSelectionChange(val) {
+        this.selectContent = val
       }
+    },
+    filters: {
+      formatDate(val) {
+        const timestamp = new Date(Number(val))
+        return timestamp.getFullYear() + '-' + timestamp.getMonth() + '-' + timestamp.getDate()
+      },
+      // statusFilter(val) {
+      //   return NaireStatusText[val]
+      // },
+      // statusColorFilter(val) {
+      //   return NaireStatusColor[val]
+      // }
+    },
+    created() {
+      this.getList();
     }
   }
 </script>

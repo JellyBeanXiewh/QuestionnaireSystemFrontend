@@ -19,7 +19,7 @@
         </el-form-item>
 
         <el-form-item label="验证码" prop="check_code">
-          <el-row gutter="10">
+          <el-row :gutter="10">
             <el-col :span="14">
               <el-input v-model="form.check_code"></el-input>
             </el-col>
@@ -95,8 +95,7 @@
           if (valid) {
             const payload = this.form;
             axios.post('/login/', payload)
-              .then((res) => {
-                console.log(res);
+              .then(() => {
                 // TODO: 登录成功后的逻辑
                 // this.$message.success('登录成功！但我还没写该跳转的页面');
                 this.$router.push({ name: 'Manage' });

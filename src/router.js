@@ -34,6 +34,7 @@ const router = new Router({
       name: 'Manage',
       component: Layout,
       // meta: { require_auth: true },
+      redirect: List,
       children: [
         {
           path: '',
@@ -52,12 +53,22 @@ const router = new Router({
             navIndex: '/manage/create',
             title: '创建问卷',
           }
+        },
+        {
+          path: 'create/:id',
+          name: 'Edit',
+          component: Create,
+          meta: {
+            navIndex: '/manage/create',
+            title: '设计问卷',
+          }
         }
       ]
     },
     {
       path: '/admin',
       name: 'Admin',
+      component: Layout,
       children: [
         {
           path: '/login',
@@ -94,7 +105,18 @@ router.beforeEach((to, from, next) => {
     } else {
       next({
         name: 'Login',
-        query: {redirect: to.fullPath}
+        query: { redirect: to.fullPath }
+        // 将跳转的路由path作为参数，登录成功后跳转到该路由
+      })
+    }
+  } else if (to.meta.require_admin) {
+    if (localStorage.getItem('JWT_TOKEN')) {
+      // 通过获取当前的token是否存在
+      next();
+    } else {
+      next({
+        name: 'Admin login',
+        query: { redirect: to.fullPath }
         // 将跳转的路由path作为参数，登录成功后跳转到该路由
       })
     }

@@ -2,7 +2,7 @@
   <div class="layout-header">
     <slot />
 <!--    <a class="logout" @click="logout">注销 {{ userName }}</a>-->
-    <a class="logout">注销</a>
+    <a class="logout" @click="logout">注销</a>
   </div>
 </template>
 
@@ -26,6 +26,7 @@
           .then(() => {
             // TODO:注销逻辑
             console.log('Logout success');
+            this.$router.push({ name: 'Login' });
           })
           .catch((error) => {
             // TODO
