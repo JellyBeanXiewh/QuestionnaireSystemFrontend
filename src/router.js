@@ -130,7 +130,7 @@ const router = new Router({
     },
     {
       path: '*',
-      name: 'Not Found',
+      name: 'Not found',
       redirect: '/404',
     },
   ],
