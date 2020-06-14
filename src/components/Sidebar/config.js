@@ -7,7 +7,7 @@ const NavConfigs = [
   },
   {
     index: `${base}/create`,
-    icon: 'el-icon-s-promotion',
+    icon: 'el-icon-edit-outline',
     title: '设计问卷'
   }
 ]

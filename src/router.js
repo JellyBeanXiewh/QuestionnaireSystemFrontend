@@ -11,6 +11,8 @@ import Complete from "./components/Complete";
 import NotFound from "./components/NotFound";
 import AdminLogin from "./components/Admin/AdminLogin";
 import AdminLayout from "./components/Admin/Layout/AdminLayout";
+import UserManage from "./components/Admin/UserManage";
+import QuestionNaireManage from "./components/Admin/QuestionNaireManage";
 
 Vue.use(Router);
 
@@ -102,6 +104,7 @@ const router = new Router({
         {
           path: 'user',
           name: 'Manage User',
+          component: UserManage,
           meta: {
             navIndex: '/admin/manage/user',
             title: '用户管理',
@@ -111,6 +114,7 @@ const router = new Router({
         {
           path: 'naire',
           name: 'Manage naire',
+          component: QuestionNaireManage,
           meta: {
             navIndex: '/admin/manage/naire',
             title: '问卷管理',

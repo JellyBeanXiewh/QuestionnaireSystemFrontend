@@ -67,7 +67,7 @@
       handleSubmit(name) {
         this.$refs[name].validate((valid) => {
           if (valid) {
-            const path = '/admin/login'
+            const path = '/admin/login/'
             const payload = this.form;
             axios.post(path, payload)
               .then(() => {
