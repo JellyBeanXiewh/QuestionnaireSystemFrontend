@@ -221,7 +221,7 @@
       async saveContent() {
         for (let ques_index = 0; ques_index < this.naire.content.length; ques_index++) {
           this.naire.content[ques_index].question_id = ques_index;
-          if (this.naire.content.option) {
+          if (this.naire.content[ques_index].option) {
             for (let op_index = 0; op_index < this.naire.content[ques_index].option.length; op_index++) {
               this.naire.content[ques_index].option[op_index] = op_index;
             }
@@ -254,12 +254,13 @@
         this.saveTitle();
         for (let ques_index = 0; ques_index < this.naire.content.length; ques_index++) {
           this.naire.content[ques_index].question_id = ques_index;
-          if (this.naire.content.option) {
+          if (this.naire.content[ques_index].option) {
             for (let op_index = 0; op_index < this.naire.content[ques_index].option.length; op_index++) {
-              this.naire.content[ques_index].option[op_index] = op_index;
+              this.naire.content[ques_index].option[op_index].option_id = op_index;
             }
           }
         }
+        console.log(this.naire)
         const path = '/questionnaireSave/'
         const payload = this.naire;
         axios.post(path, payload)

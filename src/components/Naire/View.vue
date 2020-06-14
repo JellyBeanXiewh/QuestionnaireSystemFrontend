@@ -58,7 +58,7 @@
           <el-button
               type="primary"
               :loading="finished"
-              :disabled="finished"
+              :disabled="info.state !== 1"
               @click="submitNaire"
           >提交问卷
           </el-button>
@@ -100,6 +100,9 @@
           })
           .catch((error) => {
             switch (error.msg) {
+              case null:
+                this.$router.push({ name: '404' });
+                break;
               case 100:
                 this.$message.error('请将信息填写完整');
                 break;

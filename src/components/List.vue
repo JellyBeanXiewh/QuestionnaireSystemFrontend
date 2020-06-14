@@ -11,10 +11,16 @@
       />
       <el-table-column prop="Q_name" label="问卷名称" align="left">
         <template slot-scope="{ row }">
-          <router-link :to="{ name: 'Edit', params: { id: row.Q_ID } }">
+          <router-link v-if="row.state === 0" :to="{ name: 'Edit', params: { id: row.Q_ID } }">
             {{ row.Q_Name }}
 <!--            <el-tag v-if="isExpired(row.n_deadline)" class="ml-10" size="mini" type="danger">已截止</el-tag>-->
           </router-link>
+          <router-link v-else-if="row.state === 1 || row.state === 2" :to="{ name: 'View naire', params: { id: row.Q_ID } }">
+            {{ row.Q_Name }}
+          </router-link>
+          <p v-else>
+            {{ row.Q_Name }}
+          </p>
         </template>
       </el-table-column>
       <el-table-column prop="Q_creat_date" label="创建时间" align="center">
@@ -37,19 +43,22 @@
       </el-table-column>
       <el-table-column label="操作" align="center" width="200px">
         <template slot-scope="{ row }">
-          <el-button v-if="row.state === 1 || row.state === 2" type="primary" size="mini" style="margin-right: 10px" @click="handleStatistics(row)">统计分析</el-button>
-          <el-button type="primary" size="mini" style="margin-right: 10px" @click="handleGetResult(row)">问卷结果</el-button>
+<!--          <el-button v-if="row.state === 1 || row.state === 2" type="primary" size="mini" style="margin-right: 10px" @click="handleStatistics(row)">统计分析</el-button>-->
+          <el-button v-if="row.state === 1 || row.state === 2" type="primary" size="mini" style="margin-right: 10px" @click="handleGetResult(row)">统计分析</el-button>
 <!--          <router-link tag="el-button" to="">1</router-link>-->
           <el-dropdown @command="onOptionClick($event, row)">
             <el-button type="danger" size="mini">
               操作<i class="el-icon-arrow-down el-icon--right" />
             </el-button>
             <el-dropdown-menu slot="dropdown">
-              <el-dropdown-item command="preview">预览问卷</el-dropdown-item>
+              <el-dropdown-item v-if="row.state !== 3" command="preview">预览问卷</el-dropdown-item>
               <el-dropdown-item command="copyUrl">复制地址</el-dropdown-item>
-              <el-dropdown-item command="submitStatistic">查看回收情况</el-dropdown-item>
-              <el-dropdown-item command="edit" divided>编辑问卷</el-dropdown-item>
-              <el-dropdown-item command="deadline">修改截止时间</el-dropdown-item>
+              <el-dropdown-item v-if="row.state === 2" command="submitStatistic">问卷结果</el-dropdown-item>
+              <el-dropdown-item divided></el-dropdown-item>
+              <el-dropdown-item v-if="row.state === 0" command="edit">编辑问卷</el-dropdown-item>
+              <el-dropdown-item v-if="row.state === 1" command="stop">停用问卷</el-dropdown-item>
+              <el-dropdown-item v-if="row.state === 0" command="publish">发布问卷</el-dropdown-item>
+              <el-dropdown-item v-if="row.state === 1" command="deadline">修改截止时间</el-dropdown-item>
 <!--              <el-dropdown-item command="publish">{{ row.n_status === NaireStatus.PUBLISHED ? '停止发布' : '发布问卷' }}</el-dropdown-item>-->
               <el-dropdown-item command="delete">删除问卷</el-dropdown-item>
             </el-dropdown-menu>
@@ -128,13 +137,43 @@
             console.log(res)
             return res;
           })
+      },
+      onOptionClick(command, row) {
+        switch (command) {
+          case 'preview':
+            this.$router.push({ name: 'View naire', params: { id: row.Q_ID } });
+            break;
+
+          case 'stop':
+            this.stopNaire(row.Q_ID);
+            break;
+        }
+      },
+      stopNaire(q_id) {
+        const path = '/questionnaireInactive/';
+        const payload = {
+          Q_ID: q_id,
+        };
+        axios.post(path, payload)
+          .then(() => {
+            this.$message.success('问卷停用成功');
+            this.getList();
+          })
+          .catch((error) => {
+            switch (error.msg) {
+              case 100:
+                this.$message.error('请将信息填写完整');
+                break;
+              default:
+                this.$message.error('网络连接超时，请检查网络或稍后再试');
+            }
+          })
       }
     },
     filters: {
       formatDate(val) {
-        console.log(val);
         const timestamp = new Date(Number(val) * 1000)
-        return val === 0 ? '' : timestamp.getFullYear() + '-' + (timestamp.getMonth() + 1) + '-' + timestamp.getDate()
+        return !val? '' : timestamp.getFullYear() + '-' + (timestamp.getMonth() + 1) + '-' + timestamp.getDate()
       },
       stateFilter(val) {
         switch (val) {

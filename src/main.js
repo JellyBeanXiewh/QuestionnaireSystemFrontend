@@ -15,17 +15,17 @@ Vue.use(ElementUI, { size: 'small' })
 axios.defaults.baseURL = baseURL
 
 // http request 拦截器
-axios.interceptors.request.use(
-  config => {
-    if (localStorage.JWT_TOKEN) {  // 判断是否存在token，如果存在的话，则每个http header都加上token
-      config.headers.Authorization = `token ${localStorage.JWT_TOKEN}`
-    }
-    return config
-  },
-  err => {
-    return Promise.reject(err)
-  }
-)
+// axios.interceptors.request.use(
+//   config => {
+//     if (localStorage.JWT_TOKEN) {  // 判断是否存在token，如果存在的话，则每个http header都加上token
+//       config.headers.Authorization = `token ${localStorage.JWT_TOKEN}`
+//     }
+//     return config
+//   },
+//   err => {
+//     return Promise.reject(err)
+//   }
+// )
 
 // http response 拦截器
 axios.interceptors.response.use(
@@ -40,7 +40,7 @@ axios.interceptors.response.use(
           // store.commit('LOG_OUT')
           router.replace({
             path: '/login',
-            query: {redirect: router.currentRoute.fullPath}
+            query: { redirect: router.currentRoute.fullPath }
           })
         // this.$Message.error('非法访问，请重试！')
       }

@@ -80,7 +80,7 @@
       formatDate(val) {
         console.log(val);
         const timestamp = new Date(Number(val) * 1000)
-        return val === 0 ? '' : timestamp.getFullYear() + '-' + (timestamp.getMonth() + 1) + '-' + timestamp.getDate()
+        return !val? '' : timestamp.getFullYear() + '-' + (timestamp.getMonth() + 1) + '-' + timestamp.getDate()
       },
       stateFilter(val) {
         switch (val) {
