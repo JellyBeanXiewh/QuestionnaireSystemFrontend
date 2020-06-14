@@ -1,7 +1,7 @@
 <template>
   <div class="login-wrapper">
     <div class="login-form">
-      <h3 class="title">用户登录</h3>
+      <h3 class="title">管理员登录</h3>
       <el-form
           ref="form"
           :model="form"
@@ -11,23 +11,13 @@
           @submit.native.prevent
           @keyup.enter="handleSubmit('form')"
       >
-        <el-form-item label="邮箱" prop="email">
-          <el-input v-model="form.email" autocomplete="on"></el-input>
+        <el-form-item label="用户名" prop="admin">
+          <el-input v-model="form.admin" autocomplete="on"></el-input>
         </el-form-item>
         <el-form-item label="密码" prop="pwd">
           <el-input v-model="form.pwd" type="password"></el-input>
         </el-form-item>
 
-        <el-form-item label="验证码" prop="check_code">
-          <el-row :gutter="10">
-            <el-col :span="14">
-              <el-input v-model="form.check_code"></el-input>
-            </el-col>
-            <el-col :span="10">
-              <el-image :src="check_code_url" fit="fill" alt="验证码" @click="get_check_code"></el-image>
-            </el-col>
-          </el-row>
-        </el-form-item>
         <el-form-item>
           <el-button
               class="login-btn"
@@ -38,9 +28,6 @@
             登录
           </el-button>
         </el-form-item>
-        <el-row type="flex" justify="center">
-          <el-link type="primary" href="/register">没有账号？去注册</el-link>
-        </el-row>
       </el-form>
     </div>
     <div class="login-logo"/>
@@ -48,24 +35,21 @@
 </template>
 
 <script>
-  import axios from 'axios';
-  import baseURL from "../config";
+  import axios from "axios";
 
   export default {
-    name: "Login",
+    name: "AdminLogin",
     data() {
       return {
-        check_code_url: '',
         form: {
-          email: '',
+          admin: '',
           pwd: '',
-          check_code: '',
         },
         rules: {
-          email: [
+          admin: [
             {
               required: true,
-              message: '请输入邮箱',
+              message: '请输入用户名',
               trigger: 'blur',
             }
           ],
@@ -76,67 +60,40 @@
               trigger: 'blur',
             }
           ],
-          check_code: [
-            {
-              required: true,
-              message: '请输入验证码',
-              trigger: 'blur',
-            }
-          ]
         }
       };
     },
     methods: {
-      get_check_code() {
-        this.check_code_url = `${baseURL}/checkCode/?time=${Date.now()}`;
-      },
       handleSubmit(name) {
         this.$refs[name].validate((valid) => {
           if (valid) {
+            const path = '/admin/login'
             const payload = this.form;
-            axios.post('/login/', payload)
+            axios.post(path, payload)
               .then(() => {
-                // TODO: 这里跳转逻辑还是有点问题
                 if (this.$route.params.redirect) {
                   this.$router.push({ path: this.$route.params.redirect });
                 } else {
-                  this.$router.push({ name: 'Manage' });
+                  this.$router.push({ name: 'Admin manage' });
                 }
               })
               .catch((error) => {
-                switch (error.status) {
-                  case 403:
-                    switch (error.msg) {
-                      case 1:
-                        this.$message.error('用户名或密码错误');
-                        break;
-                      case 2:
-                        this.$message.error('验证码错误');
-                        break;
-                      case 100:
-                        this.$message.error('请将信息填写完整');
-                        break;
-                      default:
-                        this.$message.error('其他错误');
-                    }
+                switch (error.msg) {
+                  case 1:
+                    this.$message.error('用户名或密码错误');
+                    break;
+                  case 100:
+                    this.$message.error('请将信息填写完整');
                     break;
                   default:
                     this.$message.error('网络连接超时，请检查网络或稍后再试');
                 }
-                this.get_check_code()
               })
           } else {
             this.$message.error('信息填写有误')
-            this.get_check_code()
           }
         })
-      }
-    },
-    created() {
-      if (this.$cookies.isKey('user')) {
-        this.$router.push({ name: 'Manage' });
-      }
-      this.get_check_code();
+      },
     }
   }
 </script>
@@ -185,19 +142,6 @@
     height: 75px;
     /*background: url("../../assets/logo.png") no-repeat center;*/
     background-size: cover;
-  }
-
-  .login-wrapper .login-github {
-    position: absolute;
-    top: 20px;
-    right: 30px;
-    margin: 20px 0;
-    color: #fff;
-    vertical-align: middle;
-  }
-
-  .login-wrapper .icon-github {
-    display: inline-block;
   }
 
   .login-wrapper .icon-github img {

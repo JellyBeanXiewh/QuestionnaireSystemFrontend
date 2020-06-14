@@ -1,0 +1,237 @@
+<template>
+  <div v-loading.fullscreen.lock="loading" class="view-layout">
+    <div v-if="isNotPublish" class="main">
+      <div class="header">
+        <h1>问卷未发布！</h1>
+      </div>
+      <div class="content">
+        <p>您所填写的问卷未发布，暂不能填写。</p>
+      </div>
+    </div>
+    <div v-else-if="isExpired" class="main">
+      <div class="header">
+        <h1>问卷已过期！</h1>
+      </div>
+      <div class="content">
+        <p>您所填写的问卷已到截止日期，暂不能填写。</p>
+      </div>
+    </div>
+    <div v-else-if="naire" class="main">
+      <div class="header">
+        <h1>{{ info.Q_Name }}</h1>
+      </div>
+      <div class="content">
+        <div class="intro">
+          <p class="mt-10">截止日期：{{ info.Q_Deadline_Date | formatDate }}</p>
+        </div>
+        <!--        <div class="user-info">-->
+        <!--          <el-alert :type="isLogin ? 'success' : 'warning'">{{ loginTip }}</el-alert>-->
+        <!--          <el-form-->
+        <!--              v-show="!isLogin"-->
+        <!--              ref="userInfo"-->
+        <!--              class="mt-10"-->
+        <!--              :model="userInfo"-->
+        <!--              :rules="userInfoRule"-->
+        <!--              inline-->
+        <!--          >-->
+        <!--            <el-form-item prop="name">-->
+        <!--              <el-input v-model="userInfo.name" placeholder="请输入姓名" />-->
+        <!--            </el-form-item>-->
+        <!--            <el-form-item prop="identity">-->
+        <!--              <el-input v-model="userInfo.identity" placeholder="请输入身份证后6位" />-->
+        <!--            </el-form-item>-->
+        <!--            <el-form-item>-->
+        <!--              <el-button type="primary" @click="handleSubmit">点击登录</el-button>-->
+        <!--            </el-form-item>-->
+        <!--          </el-form>-->
+        <!--        </div>-->
+
+        <question-list v-loading.fullscrean.lock="false" :question-list="naire.content"/>
+
+        <div class="text-center">
+<!--          <el-button-->
+<!--              v-if="isAdmin"-->
+<!--              type="success"-->
+<!--              @click="goBack"-->
+<!--          >返回管理平台-->
+<!--          </el-button>-->
+          <el-button
+              type="primary"
+              :loading="finished"
+              :disabled="finished"
+              @click="submitNaire"
+          >提交问卷
+          </el-button>
+        </div>
+      </div>
+    </div>
+    <div class="footer">
+      <p>问卷系统</p>
+    </div>
+  </div>
+</template>
+
+<script>
+  import axios from 'axios';
+  import QuestionList from "./Question/QuestionList";
+
+  export default {
+    name: "View",
+    components: {
+      QuestionList,
+    },
+    data() {
+      return {
+        Q_ID: this.$route.params.id,
+        info: {},
+        naire: {},
+      }
+    },
+    methods: {
+      getInfo() {
+        // this.info = {
+        //   Q_Name: '问卷标题',
+        //   Q_Deadline_Date: 1592102963,
+        // };
+        const path = `/questionnaireInfo/?Q_ID=${this.Q_ID}`;
+        axios.get(path)
+          .then((res) => {
+            this.info = res.data;
+          })
+          .catch((error) => {
+            switch (error.msg) {
+              case 100:
+                this.$message.error('请将信息填写完整');
+                break;
+              default:
+                this.$message.error('网络连接超时，请检查网络或稍后再试');
+            }
+          })
+      },
+      getNaire() {
+        // this.naire = {
+        //   Q_ID: 1,
+        //   content:
+        //     [
+        //       {
+        //         question_id: 1,
+        //         question_content: "问题1",
+        //         question_type: 0,
+        //         option:
+        //           [
+        //             {
+        //               option_id: 1,
+        //               option_content: "选项1",
+        //             },
+        //             {
+        //               option_id: 2,
+        //               option_content: "选项2",
+        //             }
+        //           ]
+        //       },
+        //       {
+        //         question_id: 2,
+        //         question_content: "问题2",
+        //         question_type: 1,
+        //         option:
+        //           [
+        //             {
+        //               option_id: 1,
+        //               option_content: "选项1",
+        //             },
+        //             {
+        //               option_id: 2,
+        //               option_content: "选项2",
+        //             }
+        //           ]
+        //       },
+        //       {
+        //         question_id: 3,
+        //         question_content: "问题3",
+        //         question_type: 2,
+        //       }
+        //     ]
+        // };
+        const path = `/questionnaireGet/?Q_ID=${this.Q_ID}`;
+        axios.get(path)
+          .then((res) => {
+            this.naire = res.data;
+          })
+          .catch((error) => {
+            switch (error.msg) {
+              case 100:
+                this.$message.error('请将信息填写完整');
+                break;
+              default:
+                this.$message.error('网络连接超时，请检查网络或稍后再试');
+            }
+          })
+      },
+      submitNaire() {
+        this.$router.push({ name: 'Complete' })
+      }
+    },
+    filters: {
+      formatDate(val) {
+        const timestamp = new Date(Number(val) * 1000)
+        return timestamp.getFullYear() + '-' + (timestamp.getMonth() + 1) + '-' + timestamp.getDate()
+      },
+    },
+    created() {
+      this.getInfo();
+      this.getNaire();
+    }
+  }
+</script>
+
+<style scoped>
+  .view-layout {
+    background-color: #edf0f8;
+    min-height: 100vh;
+    max-height: 100%;
+    height: 100%;
+    width: 100%;
+    padding: 20px 10px;
+    font-size: 14px;
+    overflow-y: scroll;
+    -webkit-overflow-scrolling: touch;
+  }
+  .view-layout .main {
+    max-width: 800px;
+    width: 100%;
+    height: auto;
+    margin: 0 auto;
+    padding-bottom: 30px;
+    background-color: #fff;
+    box-shadow: 0 2px 5px 1px rgba(124, 124, 124, 0.2);
+  }
+  .view-layout .header {
+    padding: 30px 20px;
+    height: auto;
+    min-height: 33px;
+    border-bottom: 2px dotted #eee;
+  }
+  .view-layout .header h1 {
+    width: 100%;
+    margin: 0 auto;
+    text-align: center;
+  }
+  .view-layout .content {
+    padding: 20px;
+    text-align: left;
+    font-size: inherit;
+  }
+  .view-layout .content .intro {
+    margin: 10px 0;
+  }
+  .view-layout .footer {
+    margin-top: 10px;
+    padding-top: 10px;
+    text-align: center;
+    border-top: 1px dotted #eee;
+  }
+
+  .code-row-bg button {
+    margin: 0 10px;
+  }
+</style>

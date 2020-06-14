@@ -1,8 +1,8 @@
 <template>
   <div class="create">
     <el-form ref="form" :model="naire" :rules="rules" label-position="right" label-width="100px">
-      <el-form-item label="问卷名称" prop="title">
-        <el-input v-model="naire.title" />
+      <el-form-item label="问卷名称" prop="Q_name">
+        <el-input v-model="naire.Q_name" />
       </el-form-item>
 
       <div class="add-option">
@@ -18,14 +18,14 @@
           @delOption="onDelOption"
       ></question-list>
 
-      <el-form-item label="截止时间" prop="deadline">
-        <el-date-picker
-            v-model="naire.deadline"
-            type="datetime"
-            :picker-options="datePickerOptions"
-            placeholder="选择日期时间"
-        />
-      </el-form-item>
+<!--      <el-form-item label="截止时间" prop="deadline">-->
+<!--        <el-date-picker-->
+<!--            v-model="naire.deadline"-->
+<!--            type="datetime"-->
+<!--            :picker-options="datePickerOptions"-->
+<!--            placeholder="选择日期时间"-->
+<!--        />-->
+<!--      </el-form-item>-->
 
       <el-form-item>
         <el-button type="default" @click="save">保存问卷</el-button>
@@ -47,7 +47,7 @@
           label-width="100px"
           @keyup.enter="handleCreate"
       >
-        <el-form-item label="问卷标题" prop="Q_title">
+        <el-form-item label="问卷名称" prop="Q_title">
           <el-input v-model="title_form.Q_title"></el-input>
         </el-form-item>
       </el-form>
@@ -66,6 +66,7 @@
           type="date"
           :picker-options="datePickerOptions"
           placeholder="选择截止日期"
+          value-format="timestamp"
           style="width: 100%"
       ></el-date-picker>
       <span slot="footer" class="dialog-footer">
@@ -105,6 +106,7 @@
         },
         naire: {
           Q_ID: '',
+          Q_name: '',
           content: []
         },
         rules: {
@@ -123,6 +125,23 @@
       }
     },
     methods: {
+      getTitle() {
+        const path = `/questionnaireInfo/?Q_ID=${this.Q_ID}`
+        axios.get(path)
+          .then((res) => {
+            this.naire.Q_name = res.data.Q_Name;
+          })
+          .catch((error) => {
+            console.log(error)
+            switch (error.msg) {
+              case 100:
+                this.$message.error('请将信息填写完整');
+                break;
+              default:
+                this.$message.error('网络连接超时，请检查网络或稍后再试');
+            }
+          })
+      },
       getNaire() {
         const path = `/questionnaireGet/?Q_ID=${this.Q_ID}`;
         axios.get(path)
@@ -135,7 +154,6 @@
       },
       onAddOption({index}) {
         const tempData = {
-          option_id: this.naire.content[index].option.length,
           option_content: '选项',
         }
         this.naire.content[index].option.push({ ...tempData })
@@ -176,7 +194,31 @@
         }
         this.naire.content.push(ques);
       },
-      save() {
+      async saveTitle() {
+        const path = '/questionnaireRename/';
+        const payload = {
+          Q_ID: this.Q_ID,
+          Q_Name: this.naire.Q_name,
+        }
+        axios.post(path, payload)
+          .then(() => {
+            return true;
+          })
+          .catch((error) => {
+            switch (error.msg) {
+              case 1:
+                this.$message.error('保存失败');
+                break;
+              case 100:
+                this.$message.error('请将信息填写完整');
+                break;
+              default:
+                this.$message.error('网络连接超时，请检查网络或稍后再试');
+            }
+            return false;
+          })
+      },
+      async saveContent() {
         for (let ques_index = 0; ques_index < this.naire.content.length; ques_index++) {
           this.naire.content[ques_index].question_id = ques_index;
           if (this.naire.content.option) {
@@ -189,7 +231,40 @@
         const payload = this.naire;
         axios.post(path, payload)
           .then(() => {
-            this.$message.success('保存成功');
+            return true
+          })
+          .catch((error) => {
+            switch (error.msg) {
+              case 2:
+                this.$message.error('保存失败');
+                break;
+              case 100:
+                this.$message.error('请将信息填写完整');
+                break;
+              default:
+                this.$message.error('网络连接超时，请检查网络或稍后再试');
+            }
+            return false;
+          })
+      },
+      async save() {
+        // if (this.saveTitle() && this.saveContent()) {
+        //   this.$message.success('保存成功');
+        // }
+        this.saveTitle();
+        for (let ques_index = 0; ques_index < this.naire.content.length; ques_index++) {
+          this.naire.content[ques_index].question_id = ques_index;
+          if (this.naire.content.option) {
+            for (let op_index = 0; op_index < this.naire.content[ques_index].option.length; op_index++) {
+              this.naire.content[ques_index].option[op_index] = op_index;
+            }
+          }
+        }
+        const path = '/questionnaireSave/'
+        const payload = this.naire;
+        axios.post(path, payload)
+          .then(() => {
+            this.$message.success('保存成功')
           })
           .catch((error) => {
             switch (error.msg) {
@@ -204,12 +279,12 @@
             }
           })
       },
-      publish() {
-        this.save();
+      async publish() {
+        await this.save();
         const path = '/questionnairePublish/';
         const payload = {
           Q_ID: this.Q_ID,
-          end_date: this.endDate,
+          end_date: this.end_date / 1000,
         }
         axios.post(path, payload)
           .then(() => {
@@ -236,7 +311,11 @@
             const payload = this.title_form;
             axios.post(path, payload)
               .then((res) => {
-                this.$router.push({name: 'Edit', params: {id: res.data.Q_ID}});
+                this.showCreateDialog = false;
+                this.Q_ID = this.naire.Q_ID = res.data.Q_ID;
+                this.saveContent()
+                this.$router.push({ name: 'Edit', params: { id: res.data.Q_ID } });
+                this.getTitle();
               })
               .catch((error) => {
                 switch (error.msg) {
@@ -255,12 +334,13 @@
       },
     },
     created() {
-      // if (!this.$route.params.id) {
-      //   this.showCreateDialog = true;
-      // } else {
-      //   this.Q_ID = this.$route.params.id;
-      //   this.getNaire();
-      // }
+      if (!this.$route.params.id) {
+        this.showCreateDialog = true;
+      } else {
+        this.Q_ID = this.$route.params.id;
+        this.getTitle();
+        this.getNaire();
+      }
     }
   }
 </script>

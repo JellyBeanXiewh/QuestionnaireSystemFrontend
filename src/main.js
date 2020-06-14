@@ -1,10 +1,13 @@
 import Vue from 'vue'
 import App from './App.vue'
+import VueCookies from 'vue-cookies';
 import router from './router'
 import ElementUI from 'element-ui';
 import 'element-ui/lib/theme-chalk/index.css';
 import axios from 'axios'
 import baseURL from "./config"
+
+Vue.use(VueCookies);
 
 // Vue.use(BootstrapVue)
 Vue.use(ElementUI, { size: 'small' })
