@@ -9,7 +9,6 @@ import baseURL from "./config"
 
 Vue.use(VueCookies);
 
-// Vue.use(BootstrapVue)
 Vue.use(ElementUI, { size: 'small' })
 
 axios.defaults.baseURL = baseURL

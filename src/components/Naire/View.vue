@@ -89,10 +89,6 @@
     },
     methods: {
       getInfo() {
-        // this.info = {
-        //   Q_Name: '问卷标题',
-        //   Q_Deadline_Date: 1592102963,
-        // };
         const path = `/questionnaireInfo/?Q_ID=${this.Q_ID}`;
         axios.get(path)
           .then((res) => {
@@ -112,49 +108,6 @@
           })
       },
       getNaire() {
-        // this.naire = {
-        //   Q_ID: 1,
-        //   content:
-        //     [
-        //       {
-        //         question_id: 1,
-        //         question_content: "问题1",
-        //         question_type: 0,
-        //         option:
-        //           [
-        //             {
-        //               option_id: 1,
-        //               option_content: "选项1",
-        //             },
-        //             {
-        //               option_id: 2,
-        //               option_content: "选项2",
-        //             }
-        //           ]
-        //       },
-        //       {
-        //         question_id: 2,
-        //         question_content: "问题2",
-        //         question_type: 1,
-        //         option:
-        //           [
-        //             {
-        //               option_id: 1,
-        //               option_content: "选项1",
-        //             },
-        //             {
-        //               option_id: 2,
-        //               option_content: "选项2",
-        //             }
-        //           ]
-        //       },
-        //       {
-        //         question_id: 3,
-        //         question_content: "问题3",
-        //         question_type: 2,
-        //       }
-        //     ]
-        // };
         const path = `/questionnaireGet/?Q_ID=${this.Q_ID}`;
         axios.get(path)
           .then((res) => {
@@ -172,7 +125,51 @@
       },
       submitNaire() {
         this.$router.push({ name: 'Complete' })
-      }
+      },
+      // validateNaire () {
+      //   let _flag = true;
+      //   this.naire.content.forEach((item, index) => {
+      //     if (item.isRequired) {
+      //       if (item.type === questionType.TEXT_QUESTION) {
+      //         if (!(item.selectContent && item.selectContent.trim().length > 0)) {
+      //           _flag = false
+      //         }
+      //       }
+      //       if (item.type === questionType.SINGLE_CHOICE) {
+      //         const _isAddtion = item.options && item.options.some((option, index) => {
+      //           return option.isAddition && option.o_id === item.selectContent
+      //         })
+      //         // 有附加理由的情况
+      //         if (_isAddtion && !(item.additional && item.additional.trim().length > 0)) {
+      //           _addtion = true
+      //         }
+      //         if (!(item.selectContent && item.selectContent.trim().length > 0)) {
+      //           _flag = false
+      //         }
+      //       }
+      //       if (item.type === questionType.MULTIPLE_CHOICE) {
+      //         if (!(item.selectMultipleContent && item.selectMultipleContent.length > 0)) {
+      //           _flag = false
+      //         }
+      //         // 必选几项
+      //         if ((item.setting.last && item.setting.last > 0) &&
+      //           (item.selectMultipleContent && item.selectMultipleContent.length !== Number(item.setting.last)
+      //           )) {
+      //           _flag = false
+      //         }
+      //       }
+      //     }
+      //   })
+      //   if (!_flag) {
+      //     this.$notify.warning({
+      //       title: '提示',
+      //       message: '您还有必填项未正确填写，请检查后提交！',
+      //       type: 'warning'
+      //     })
+      //     return false
+      //   }
+      //   return true
+      // }
     },
     filters: {
       formatDate(val) {
