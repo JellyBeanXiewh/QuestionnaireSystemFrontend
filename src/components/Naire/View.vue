@@ -97,6 +97,7 @@
           .catch((error) => {
             switch (error.msg) {
               case null:
+              case 1:
                 this.$router.push({ name: '404' });
                 break;
               case 100:
