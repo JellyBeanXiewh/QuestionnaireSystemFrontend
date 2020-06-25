@@ -108,7 +108,7 @@ const router = new Router({
           meta: {
             navIndex: '/admin/manage/user',
             title: '用户管理',
-            // require_admin: true
+            require_admin: true
           }
         },
         {
@@ -118,7 +118,7 @@ const router = new Router({
           meta: {
             navIndex: '/admin/manage/naire',
             title: '问卷管理',
-            // require_admin: true
+            require_admin: true
           }
         }
       ]
