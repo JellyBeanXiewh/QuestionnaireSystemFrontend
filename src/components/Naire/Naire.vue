@@ -1,23 +1,6 @@
 <template>
   <div v-loading.fullscreen.lock="loading" class="view-layout">
-<!--    <div v-if="isNotPublish" class="main">-->
-    <div v-if="false" class="main">
-      <div class="header">
-        <h1>问卷未发布！</h1>
-      </div>
-      <div class="content">
-        <p>您所填写的问卷未发布，暂不能填写。</p>
-      </div>
-    </div>
-<!--    <div v-else-if="isExpired" class="main">-->
-<!--      <div class="header">-->
-<!--        <h1>问卷已过期！</h1>-->
-<!--      </div>-->
-<!--      <div class="content">-->
-<!--        <p>您所填写的问卷已到截止日期，暂不能填写。</p>-->
-<!--      </div>-->
-<!--    </div>-->
-    <div v-else-if="naire" class="main">
+    <div class="main">
       <div class="header">
         <h1>{{ info.Q_Name }}</h1>
       </div>
@@ -26,15 +9,9 @@
           <p class="mt-10">截止日期：{{ info.Q_Deadline_Date | formatDate }}</p>
         </div>
 
-        <question-list v-loading.fullscrean.lock="false" :question-list="naire.content"></question-list>
+        <question-list :question-list="naire.content"></question-list>
 
         <div class="text-center">
-<!--          <el-button-->
-<!--              v-if="isAdmin"-->
-<!--              type="success"-->
-<!--              @click="goBack"-->
-<!--          >返回管理平台-->
-<!--          </el-button>-->
           <el-button
               type="primary"
               :loading="finished"
@@ -112,7 +89,7 @@
         this.naire.content.forEach((item) => {
           switch (item.question_type) {
             case 0:
-              if (!(item.op)) {
+              if (item.op === undefined) {
                 valid = false
               }
               break;
