@@ -119,9 +119,10 @@
         },
         datePickerOptions: {
           disabledDate(date) {
-            return date && date.valueOf() < Date.now()
+            const currentDate = Date.now();
+            return (date && date.valueOf() < currentDate) || (date && date.valueOf() > currentDate + 2592000000);
           }
-        }
+        },
       }
     },
     methods: {
@@ -225,7 +226,7 @@
           this.naire.content[ques_index].question_id = ques_index;
           if (this.naire.content[ques_index].option) {
             for (let op_index = 0; op_index < this.naire.content[ques_index].option.length; op_index++) {
-              this.naire.content[ques_index].option[op_index] = op_index;
+              this.naire.content[ques_index].option[op_index].option_id = op_index;
             }
           }
         }
