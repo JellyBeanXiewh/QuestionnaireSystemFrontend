@@ -32,13 +32,10 @@
         const path = '/logout/';
         axios.get(path)
           .then(() => {
-            // TODO:注销逻辑
-            console.log('Logout success');
             this.$router.push({ name: 'Login' });
           })
-          .catch((error) => {
-            // TODO
-            console.log(error);
+          .catch(() => {
+            this.$message.error('网络连接超时，请检查网络或稍后再试')
           })
       }
     },
