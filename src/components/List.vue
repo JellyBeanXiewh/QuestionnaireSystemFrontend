@@ -52,7 +52,7 @@
             </el-button>
             <el-dropdown-menu slot="dropdown">
               <el-dropdown-item v-if="row.state !== 3" command="preview">预览问卷</el-dropdown-item>
-              <el-dropdown-item v-if="row.state === 1 || row.state === 2" command="copyUrl">复制地址</el-dropdown-item>
+<!--              <el-dropdown-item v-if="row.state === 1 || row.state === 2" command="copyUrl">复制地址</el-dropdown-item>-->
               <el-dropdown-item v-if="row.state === 2" command="result">问卷结果</el-dropdown-item>
               <el-dropdown-item v-if="row.state !== 3" divided></el-dropdown-item>
               <el-dropdown-item v-if="row.state === 0" command="edit">编辑问卷</el-dropdown-item>
@@ -64,7 +64,7 @@
         </template>
       </el-table-column>
     </el-table>
-<!--    TODO-->
+
     <el-dialog
         title="发布问卷"
         :visible="showDeadlineDialog"
@@ -84,7 +84,6 @@
       </span>
     </el-dialog>
 
-<!--    <change-time :visible.sync="changeTimeVisible" :model="editModel" />-->
 <!--    <copy-url :visible.sync="copyUrlVisible" :model="editModel" />-->
   </div>
 </template>
@@ -98,11 +97,7 @@
     data() {
       return {
         NaireList: [],
-        // NaireStatus = NaireStatus,
         loading: false,
-        changeTimeVisible: false,
-        copyUrlVisible: false,
-        editModel: {},
         selectContent: [],
         showDeadlineDialog: false,
         showChangeDeadlineDialog: false,
@@ -153,6 +148,10 @@
           case 'preview':
             this.$router.push({ name: 'View naire', params: { id: row.Q_ID } });
             break;
+          // case 'copyUrl':
+            // console.log(window.location.origin + this.$router.resolve({ name: 'View naire', params: { id: row.Q_ID } }).href);
+            // window.clipboardData.setData('Text', window.location.origin + this.$router.resolve({ name: 'View naire', params: { id: row.Q_ID } }).href);
+            // break;
           case 'result':
             window.open(`${baseURL}/questionnaireResultGet/?Q_ID=${row.Q_ID}`, '_blank');
             break;
