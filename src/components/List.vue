@@ -133,28 +133,16 @@
         this.$router.push({ name: 'Create' })
       },
       batchDelete() {
-        this.$confirm('您确认删除这几条内容吗？', '批量删除', {
+        this.$confirm('确认删除选中的问卷吗？', '批量删除', {
           type: 'warning'
         })
           .then(async () => {
-            const rowIds = this.selectContent.map(({ n_id: id }) => id).join(',')
-            console.log(rowIds);
-            // this.deleteNaire(rowIds)
+            this.selectContent.forEach((item) => {
+              this.deleteNaire(item.Q_ID);
+            })
           })
-          .catch(() => {})
+          .catch(() => {});
       },
-      // async deleteNaire(nIds) {
-      //   console.log(nIds)
-      //   const res = await NaireAction.del({
-      //     n_id: nIds
-      //   })
-      //   if (res.success) {
-      //     this.$message.success('删除成功')
-      //     this.getList()
-      //   } else {
-      //     this.$message.error('删除失败')
-      //   }
-      // },
       onSelectionChange(val) {
         this.selectContent = val
       },
@@ -201,7 +189,7 @@
             }
           })
       },
-      deleteNaire(id) {
+      async deleteNaire(id) {
         const path = '/questionnaireDelete/';
         const payload = {
           Q_ID: id,
