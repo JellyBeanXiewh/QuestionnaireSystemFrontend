@@ -1,6 +1,6 @@
 <template>
   <div>
-    <el-radio-group v-model="content.selectContent" vertica class="radio-list">
+    <el-radio-group v-model="content.op" vertica class="radio-list">
       <el-radio
           v-for="(option, opIndex) in content.option"
           :key="opIndex"

@@ -1,13 +1,13 @@
 <template>
   <div>
     <div
-        v-for="(content, index) in questionList"
-        :key="index"
+        v-for="content in questionList"
+        :key="content.question_id"
         :class="['question-item', type]"
     >
       <div class="question-order">
         <div class="title">
-          Q{{ index + 1 }}：
+          Q{{ content.question_id + 1 }}：
           [{{ typeText(content.question_type) }}] {{ content.question_content }}
 <!--          <span v-if="topic.isRequired" style="color: #f00;">*</span>-->
         </div>
@@ -15,8 +15,8 @@
       <div class="question-content">
         <question-item
             :type="content.question_type"
-            :content="content"
-            :index="index"
+            :content.sync="content"
+            :index="content.question_id"
             v-on="$listeners"
         />
       </div>

@@ -1,9 +1,9 @@
 <template>
   <div>
-    <el-checkbox-group v-model="selectContent" class="checkbox-list">
+    <el-checkbox-group v-model="selected" class="checkbox-list">
       <el-checkbox
-          v-for="(option, opIndex) in content.option"
-          :key="opIndex"
+          v-for="option in content.option"
+          :key="option.option_id"
           :label="option.option_id"
           class="option-item"
       >
@@ -22,9 +22,20 @@
     ],
     data() {
       return {
-        selectContent: [],
+        selected: [],
       }
-    }
+    },
+    watch: {
+      selected: {
+        immediate: true,
+        deep: true,
+        handler(list) {
+          this.content.op = list
+          this.$emit('update:content', this.content)
+          // console.log(this.content.op)
+        }
+      },
+    },
   }
 </script>
 
