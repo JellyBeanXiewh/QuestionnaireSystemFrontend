@@ -13,6 +13,7 @@ import AdminLogin from "./components/Admin/AdminLogin";
 import AdminLayout from "./components/Admin/Layout/AdminLayout";
 import UserManage from "./components/Admin/UserManage";
 import QuestionNaireManage from "./components/Admin/QuestionNaireManage";
+import Statistic from "./components/Statistic";
 
 Vue.use(Router);
 
@@ -70,6 +71,16 @@ const router = new Router({
           meta: {
             navIndex: '/manage/create',
             title: '设计问卷',
+            require_auth: true
+          }
+        },
+        {
+          path: 'statistic/:id',
+          name: 'Statistic',
+          component: Statistic,
+          meta: {
+            navIndex: '/manage',
+            title: '统计分析',
             require_auth: true
           }
         }
