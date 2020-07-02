@@ -4,6 +4,7 @@ import VueCookies from 'vue-cookies';
 import router from './router'
 import ElementUI from 'element-ui';
 import 'element-ui/lib/theme-chalk/index.css';
+import echarts from 'echarts'
 import axios from 'axios'
 import baseURL from "./config"
 
@@ -11,20 +12,9 @@ Vue.use(VueCookies);
 
 Vue.use(ElementUI, { size: 'small' })
 
-axios.defaults.baseURL = baseURL
+Vue.use(echarts);
 
-// http request 拦截器
-// axios.interceptors.request.use(
-//   config => {
-//     if (localStorage.JWT_TOKEN) {  // 判断是否存在token，如果存在的话，则每个http header都加上token
-//       config.headers.Authorization = `token ${localStorage.JWT_TOKEN}`
-//     }
-//     return config
-//   },
-//   err => {
-//     return Promise.reject(err)
-//   }
-// )
+axios.defaults.baseURL = baseURL
 
 // http response 拦截器
 axios.interceptors.response.use(
@@ -35,8 +25,7 @@ axios.interceptors.response.use(
     if (error.response) {
       switch (error.response.status) {
         case 401:
-          // 返回 401 清除token信息并跳转到登录页面
-          // store.commit('LOG_OUT')
+          // 跳转到登录页面
           router.replace({
             path: '/login',
             query: { redirect: router.currentRoute.fullPath }
