@@ -195,14 +195,15 @@
         this.naire.content.push(ques);
       },
       async saveTitle() {
+        let ret = false;
         const path = '/questionnaireRename/';
         const payload = {
           Q_ID: this.Q_ID,
           Q_Name: this.naire.Q_name,
         }
-        axios.post(path, payload)
+        await axios.post(path, payload)
           .then(() => {
-            return true;
+            ret = true;
           })
           .catch((error) => {
             switch (error.msg) {
@@ -215,10 +216,11 @@
               default:
                 this.$message.error('网络连接超时，请检查网络或稍后再试');
             }
-            return false;
-          })
+          });
+        return ret;
       },
       async saveContent() {
+        let ret = false;
         for (let ques_index = 0; ques_index < this.naire.content.length; ques_index++) {
           this.naire.content[ques_index].question_id = ques_index;
           if (this.naire.content[ques_index].option) {
@@ -229,9 +231,9 @@
         }
         const path = '/questionnaireSave/'
         const payload = this.naire;
-        axios.post(path, payload)
+        await axios.post(path, payload)
           .then(() => {
-            return true
+            ret = true;
           })
           .catch((error) => {
             switch (error.msg) {
@@ -244,41 +246,15 @@
               default:
                 this.$message.error('网络连接超时，请检查网络或稍后再试');
             }
-            return false;
           })
+        return ret;
       },
       async save() {
-        // if (this.saveTitle() && this.saveContent()) {
-        //   this.$message.success('保存成功');
-        // }
-        this.saveTitle();
-        for (let ques_index = 0; ques_index < this.naire.content.length; ques_index++) {
-          this.naire.content[ques_index].question_id = ques_index;
-          if (this.naire.content[ques_index].option) {
-            for (let op_index = 0; op_index < this.naire.content[ques_index].option.length; op_index++) {
-              this.naire.content[ques_index].option[op_index].option_id = op_index;
-            }
-          }
+        let flag1 = await this.saveTitle();
+        let flag2 = await this.saveContent();
+        if (flag1 && flag2) {
+          this.$message.success('保存成功');
         }
-        console.log(this.naire)
-        const path = '/questionnaireSave/'
-        const payload = this.naire;
-        axios.post(path, payload)
-          .then(() => {
-            this.$message.success('保存成功')
-          })
-          .catch((error) => {
-            switch (error.msg) {
-              case 2:
-                this.$message.error('保存失败');
-                break;
-              case 100:
-                this.$message.error('请将信息填写完整');
-                break;
-              default:
-                this.$message.error('网络连接超时，请检查网络或稍后再试');
-            }
-          })
       },
       async publish() {
         await this.save();
