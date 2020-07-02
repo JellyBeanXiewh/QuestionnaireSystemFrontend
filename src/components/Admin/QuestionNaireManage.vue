@@ -1,5 +1,5 @@
 <template>
-  <el-table v-loading.fullscreen.lock="false" :data="NaireList">
+  <el-table v-loading.fullscreen.lock="loading" :data="NaireList">
     <el-table-column prop="Q_name" label="问卷名称" align="left">
       <template slot-scope="{ row }">
         <router-link :to="{ name: 'View naire', params: { id: row.Q_ID } }">
@@ -32,8 +32,8 @@
     </el-table-column>
     <el-table-column label="操作" align="center" width="200px">
       <template slot-scope="{ row }">
-        <el-button v-if="row.state !== 3" type="danger" size="mini" @click="changeState(row.Q_ID, 1)">封禁</el-button>
-        <el-button v-else type="danger" size="mini" @click="changeState(row.Q_ID, 0)">解封</el-button>
+        <el-button v-if="row.state !== 3" type="danger" size="mini" @click="changeState(row.Q_ID, 1)">删除</el-button>
+        <el-button v-else type="danger" size="mini" @click="changeState(row.Q_ID, 0)">恢复</el-button>
       </template>
     </el-table-column>
   </el-table>
@@ -46,12 +46,14 @@
     name: "QuestionNaireManage",
     data() {
       return {
+        loading: false,
         NaireList: [],
         offset: 0,
       }
     },
     methods: {
       getNaireList(offset) {
+        this.loading = true;
         const path = `/admin/questionnaireList/?offset=${offset}`;
         axios.get(path)
           .then((res) => {
@@ -60,6 +62,7 @@
           .catch(() => {
             this.$message.error('网络连接超时，请检查网络或稍后再试');
           })
+        this.loading = false;
       },
       changeState(q_id, state) {
         const path = '/admin/questionnaireStateChange/';
@@ -91,7 +94,7 @@
           case 2:
             return '已停止';
           case 3:
-            return '已封禁';
+            return '已删除';
         }
       },
       stateColorFilter(val) {

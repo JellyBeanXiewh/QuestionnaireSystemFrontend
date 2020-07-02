@@ -1,6 +1,6 @@
 <template>
   <div class="naire-list">
-    <el-table v-loading.fullscreen.lock="false" :data="UserList">
+    <el-table v-loading.fullscreen.lock="loading" :data="UserList">
       <el-table-column prop="username" label="用户名" align="left">
         <template slot-scope="{ row }">
             {{ row.username }}
@@ -35,12 +35,14 @@
     name: "UserManage",
     data() {
       return {
+        loading: false,
         UserList: [],
         offset: 0,
       }
     },
     methods: {
       getUserList(offset) {
+        this.loading = true;
         const path = `/admin/userList/?offset=${offset}`;
         axios.get(path)
           .then((res) => {
@@ -49,6 +51,7 @@
           .catch(() => {
             this.$message.error('网络连接超时，请检查网络或稍后再试');
           })
+        this.loading = false;
       },
       changeState(email, state) {
         const path = '/admin/userStateChange/';

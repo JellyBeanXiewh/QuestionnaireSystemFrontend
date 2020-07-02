@@ -189,8 +189,10 @@
       },
     },
     created() {
+      this.loading = true;
       this.getInfo();
       this.getNaire();
+      this.loading = false;
     }
   }
 </script>

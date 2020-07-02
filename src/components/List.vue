@@ -4,7 +4,7 @@
       <el-button type="primary" @click="create">创建问卷</el-button>
       <el-button type="danger" @click="batchDelete">批量删除</el-button>
     </div>
-    <el-table v-loading.fullscreen.lock="false" :data="NaireList" @selection-change="onSelectionChange">
+    <el-table v-loading.fullscreen.lock="loading" :data="NaireList" @selection-change="onSelectionChange">
       <el-table-column
           type="selection"
           width="55"
@@ -120,6 +120,7 @@
     },
     methods: {
       getList() {
+        this.loading = true;
         const path = '/userQuestionnaireList/';
         axios.get(path)
           .then((res) => {
@@ -128,6 +129,7 @@
           .catch(() => {
             this.$message.error('网络连接超时，请检查网络或稍后再试');
           })
+        this.loading = false;
       },
       create() {
         this.$router.push({ name: 'Create' })
