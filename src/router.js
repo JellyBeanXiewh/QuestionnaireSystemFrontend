@@ -6,7 +6,7 @@ import Register from "./components/Register";
 import Layout from "./components/Layout";
 import List from "./components/List";
 import Create from "./components/Create";
-import View from "./components/Naire/View";
+import Naire from "./components/Naire/Naire";
 import Complete from "./components/Complete";
 import NotFound from "./components/NotFound";
 import AdminLogin from "./components/Admin/AdminLogin";
@@ -78,7 +78,7 @@ const router = new Router({
     {
       path: '/naire/:id',
       name: 'View naire',
-      component: View,
+      component: Naire,
     },
     {
       path: '/complete',
