@@ -1,7 +1,6 @@
 <template>
   <div v-loading.fullscreen.lock="loading" class="view-layout">
-<!--    <div v-if="isNotPublish" class="main">-->
-    <div v-if="false" class="main">
+    <div v-if="isNotPublish" class="main">
       <div class="header">
         <h1>问卷未发布！</h1>
       </div>
@@ -9,14 +8,14 @@
         <p>您所填写的问卷未发布，暂不能填写。</p>
       </div>
     </div>
-<!--    <div v-else-if="isExpired" class="main">-->
-<!--      <div class="header">-->
-<!--        <h1>问卷已过期！</h1>-->
-<!--      </div>-->
-<!--      <div class="content">-->
-<!--        <p>您所填写的问卷已到截止日期，暂不能填写。</p>-->
-<!--      </div>-->
-<!--    </div>-->
+    <div v-else-if="isExpired" class="main">
+      <div class="header">
+        <h1>问卷已过期！</h1>
+      </div>
+      <div class="content">
+        <p>您所填写的问卷已到截止日期，暂不能填写。</p>
+      </div>
+    </div>
     <div v-else-if="naire" class="main">
       <div class="header">
         <h1>{{ info.Q_Name }}</h1>
@@ -25,8 +24,29 @@
         <div class="intro">
           <p class="mt-10">截止日期：{{ info.Q_Deadline_Date | formatDate }}</p>
         </div>
+        <!--        <div class="user-info">-->
+        <!--          <el-alert :type="isLogin ? 'success' : 'warning'">{{ loginTip }}</el-alert>-->
+        <!--          <el-form-->
+        <!--              v-show="!isLogin"-->
+        <!--              ref="userInfo"-->
+        <!--              class="mt-10"-->
+        <!--              :model="userInfo"-->
+        <!--              :rules="userInfoRule"-->
+        <!--              inline-->
+        <!--          >-->
+        <!--            <el-form-item prop="name">-->
+        <!--              <el-input v-model="userInfo.name" placeholder="请输入姓名" />-->
+        <!--            </el-form-item>-->
+        <!--            <el-form-item prop="identity">-->
+        <!--              <el-input v-model="userInfo.identity" placeholder="请输入身份证后6位" />-->
+        <!--            </el-form-item>-->
+        <!--            <el-form-item>-->
+        <!--              <el-button type="primary" @click="handleSubmit">点击登录</el-button>-->
+        <!--            </el-form-item>-->
+        <!--          </el-form>-->
+        <!--        </div>-->
 
-        <question-list v-loading.fullscrean.lock="false" :question-list="naire.content"></question-list>
+        <question-list v-loading.fullscrean.lock="false" :question-list="naire.content"/>
 
         <div class="text-center">
 <!--          <el-button-->
@@ -40,8 +60,7 @@
               :loading="finished"
               :disabled="info.state !== 1"
               @click="submitNaire"
-          >
-            提交问卷
+          >提交问卷
           </el-button>
         </div>
       </div>
@@ -57,7 +76,7 @@
   import QuestionList from "./Question/QuestionList";
 
   export default {
-    name: "Naire",
+    name: "View",
     components: {
       QuestionList,
     },
@@ -66,8 +85,6 @@
         Q_ID: this.$route.params.id,
         info: {},
         naire: {},
-        finished: false,
-        loading: false,
       }
     },
     methods: {
@@ -107,80 +124,53 @@
             }
           })
       },
-      validateNaire() {
-        let valid = true;
-        this.naire.content.forEach((item) => {
-          switch (item.question_type) {
-            case 0:
-              if (!(item.op)) {
-                valid = false
-              }
-              break;
-            case 1:
-              if (!(item.op && item.op.length > 0)) {
-                valid = false
-              }
-              break;
-            case 2:
-              if (!(item.text && item.text.trim().length > 0)) {
-                valid = false;
-              }
-              break;
-          }
-        })
-        if (!valid) {
-          this.$message.warning('请将问卷填写完整');
-        }
-        return valid;
-      },
       submitNaire() {
-        if (this.validateNaire()) {
-          this.finished = true;
-          const payload = {
-            Q_ID: this.Q_ID,
-            content: [],
-          }
-          this.naire.content.forEach((item) => {
-            let question_content = {
-              question_id: item.question_id,
-              question_type: item.question_type,
-            };
-            switch (item.question_type) {
-              case 0:
-                question_content.option = [item.op];
-                break;
-              case 1:
-                question_content.option = item.op.sort();
-                break;
-              case 2:
-                question_content.content = item.text;
-                break;
-            }
-            payload.content.push(question_content)
-          })
-          const path = '/questionnaireSubmit/';
-          axios.post(path, payload)
-            .then(() => {
-              this.finished = false;
-              this.$router.push({ name: 'Complete' });
-            })
-            .catch((error) => {
-              switch (error.msg) {
-                case 1:
-                  this.$message.error('格式错误');
-                  break;
-                case 2:
-                  this.$message.error('问卷不可用');
-                  break;
-                case 100:
-                  this.$message.error('请将问卷填写完整');
-                  break;
-                default:
-                  this.$message.error('网络连接超时，请检查网络或稍后再试');
-              }
-            })
-        }
+        this.$router.push({ name: 'Complete' })
       },
+      // validateNaire () {
+      //   let _flag = true;
+      //   this.naire.content.forEach((item, index) => {
+      //     if (item.isRequired) {
+      //       if (item.type === questionType.TEXT_QUESTION) {
+      //         if (!(item.selectContent && item.selectContent.trim().length > 0)) {
+      //           _flag = false
+      //         }
+      //       }
+      //       if (item.type === questionType.SINGLE_CHOICE) {
+      //         const _isAddtion = item.options && item.options.some((option, index) => {
+      //           return option.isAddition && option.o_id === item.selectContent
+      //         })
+      //         // 有附加理由的情况
+      //         if (_isAddtion && !(item.additional && item.additional.trim().length > 0)) {
+      //           _addtion = true
+      //         }
+      //         if (!(item.selectContent && item.selectContent.trim().length > 0)) {
+      //           _flag = false
+      //         }
+      //       }
+      //       if (item.type === questionType.MULTIPLE_CHOICE) {
+      //         if (!(item.selectMultipleContent && item.selectMultipleContent.length > 0)) {
+      //           _flag = false
+      //         }
+      //         // 必选几项
+      //         if ((item.setting.last && item.setting.last > 0) &&
+      //           (item.selectMultipleContent && item.selectMultipleContent.length !== Number(item.setting.last)
+      //           )) {
+      //           _flag = false
+      //         }
+      //       }
+      //     }
+      //   })
+      //   if (!_flag) {
+      //     this.$notify.warning({
+      //       title: '提示',
+      //       message: '您还有必填项未正确填写，请检查后提交！',
+      //       type: 'warning'
+      //     })
+      //     return false
+      //   }
+      //   return true
+      // }
     },
     filters: {
       formatDate(val) {
