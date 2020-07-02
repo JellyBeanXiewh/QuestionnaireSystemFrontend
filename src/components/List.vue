@@ -83,8 +83,6 @@
         <el-button type="default" @click="handleCancelPublish">取消</el-button>
       </span>
     </el-dialog>
-
-<!--    <copy-url :visible.sync="copyUrlVisible" :model="editModel" />-->
   </div>
 </template>
 
@@ -149,9 +147,9 @@
             this.$router.push({ name: 'View naire', params: { id: row.Q_ID } });
             break;
           // case 'copyUrl':
-            // console.log(window.location.origin + this.$router.resolve({ name: 'View naire', params: { id: row.Q_ID } }).href);
-            // window.clipboardData.setData('Text', window.location.origin + this.$router.resolve({ name: 'View naire', params: { id: row.Q_ID } }).href);
-            // break;
+          //   console.log(window.location.origin + this.$router.resolve({ name: 'View naire', params: { id: row.Q_ID } }).href);
+          //   window.clipboardData.setData('Text', window.location.origin + this.$router.resolve({ name: 'View naire', params: { id: row.Q_ID } }).href);
+          //   break;
           case 'result':
             window.open(`${baseURL}/questionnaireResultGet/?Q_ID=${row.Q_ID}`, '_blank');
             break;
@@ -244,6 +242,9 @@
         this.publish_form.Q_ID = '';
         this.publish_form.end_date = '';
       },
+      handleGetResult(row) {
+        this.$router.push({ name: 'Statistic', params: { id: row.Q_ID } });
+      }
     },
     filters: {
       formatDate(val) {
