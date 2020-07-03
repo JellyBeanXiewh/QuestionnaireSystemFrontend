@@ -3,11 +3,6 @@
 <!--    <header-info :naire="naire" />-->
     <div v-if="results.length > 0">
 <!--      <el-button type="primary" @click="handleChangeMode">切换模式</el-button>-->
-      <el-row type="flex" justify="end">
-        <el-col :xs="4" :sm="3" :md="2" :lg="2" :xl="1">
-
-        </el-col>
-      </el-row>
       <div class="switch">
         <el-switch
             v-model="scoreMode"
@@ -38,7 +33,7 @@
         <div class="echarts">
           <div
               :id="'chart-'+ index"
-              :style="{ width: '100%', height: '500%'}"
+              :style="{ width: '100%', height: '500%' }"
           ></div>
         </div>
       </div>
@@ -131,7 +126,7 @@
               {
                 name: '人数',
                 type: 'bar',
-                barWidth: '60%',
+                barWidth: '20%',
                 data: optionCount
               }
             ]
