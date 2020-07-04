@@ -288,11 +288,11 @@
             const path = '/questionnaireCreate/';
             const payload = this.title_form;
             axios.post(path, payload)
-              .then((res) => {
+              .then(async (res) => {
                 this.showCreateDialog = false;
                 this.Q_ID = this.naire.Q_ID = res.data.Q_ID;
-                this.saveContent()
-                this.$router.push({ name: 'Edit', params: { id: res.data.Q_ID } });
+                await this.saveContent()
+                await this.$router.push({ name: 'Edit', params: {id: res.data.Q_ID} });
                 this.getTitle();
               })
               .catch((error) => {
